@@ -1,5 +1,11 @@
 use std::{mem::{align_of, size_of}, ptr, slice};
 
+pub unsafe fn reff<A, B>(data: &A) -> &B {
+	assert!(data as *const A as usize % align_of::<B>() == 0, "input not aligned with output type");
+	assert!(size_of::<A>() == size_of::<B>(), "input and output sizes do not match");
+	&*(data as *const A).cast()
+}
+
 pub unsafe fn slice<A, B>(data: &[A]) -> &[B] {
 	let len = data.len();
 	assert!(data.as_ptr() as usize % align_of::<B>() == 0, "input not aligned with output type");
